@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신입사원 정보 입력 양식</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Segoe UI', sans-serif;
+            background: #f0f4f8;
+            min-height: 100vh;
+            padding: 32px 16px;
+            color: #1e293b;
+        }
+
+        .page-header {
+            max-width: 760px;
+            margin: 0 auto 28px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1e293b;
+            letter-spacing: -0.5px;
+        }
+
+        .page-header p {
+            margin-top: 6px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 28px 32px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group:last-child { margin-bottom: 0; }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .required { color: #ef4444; margin-left: 2px; }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        input[type="date"],
+        input[type="month"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #1e293b;
+            background: #fff;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        input.error {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+        }
+
+        /* 테이블 */
+        .table-wrap { overflow-x: auto; margin-bottom: 10px; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 400px; }
+
+        th {
+            background: #f8fafc;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            font-size: 12px;
+        }
+
+        td {
+            padding: 6px 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        td input { border: none; padding: 6px 8px; border-radius: 4px; background: transparent; font-size: 13px; }
+        td input:focus { background: #f0f7ff; box-shadow: none; border-color: transparent; }
+
+        .btn-add {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 7px 14px;
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1.5px solid #bfdbfe;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-add:hover { background: #dbeafe; }
+
+        .btn-remove {
+            padding: 4px 10px;
+            background: #fff1f2;
+            color: #ef4444;
+            border: 1.5px solid #fecdd3;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-remove:hover { background: #fee2e2; }
+
+        /* 파일 업로드 */
+        .file-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #64748b;
+            transition: all 0.15s;
+            background: #f8fafc;
+        }
+
+        .file-label:hover { border-color: #2563eb; color: #2563eb; background: #eff6ff; }
+
+        .file-label input[type="file"] { display: none; }
+
+        .file-name {
+            font-size: 12px;
+            color: #2563eb;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        /* 제출 버튼 */
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+            letter-spacing: -0.3px;
+        }
+
+        .btn-submit:hover { background: #1d4ed8; }
+        .btn-submit:active { transform: scale(0.99); }
+        .btn-submit:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+
+        /* 알림 */
+        .alert {
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .alert-success { background: #f0fdf4; color: #166534; border: 1.5px solid #bbf7d0; }
+        .alert-error   { background: #fff1f2; color: #991b1b; border: 1.5px solid #fecdd3; }
+
+        @media (max-width: 560px) {
+            .row-2, .row-3 { grid-template-columns: 1fr; }
+            .card { padding: 20px 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-header">
+    <h1>신입사원 정보 입력 양식</h1>
+    <p>아래 정보를 빠짐없이 입력한 후 제출해주세요. <span style="color:#ef4444">*</span> 표시 항목은 필수입니다.</p>
+</div>
+
+<div class="container">
+    <div id="alertBox" class="alert"></div>
+
+    <form id="employeeForm" novalidate>
+
+        <!-- 기본 정보 -->
+        <div class="card">
+            <div class="card-title">기본 정보</div>
+
+            <div class="row-2">
+                <div class="form-group">
+                    <label>이름 <span class="required">*</span></label>
+                    <input type="text" id="name" placeholder="홍길동" required>
+                </div>
+                <div class="form-group">
+                    <label>생년월일 <span class="required">*</span></label>
+                    <input type="date" id="birthDate" min="1900-01-01" max="9999-12-31" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>주민등록번호</label>
+                <input type="text" id="rrn" placeholder="000000-0000000" maxlength="14" inputmode="numeric">
+                <div class="hint">숫자만 입력하면 자동으로 하이픈이 추가됩니다.</div>
+            </div>
+
+            <div class="row-2">
+                <div class="form-group">
+                    <label>휴대폰 <span class="required">*</span></label>
+                    <input type="tel" id="phone" placeholder="010-0000-0000" maxlength="13" inputmode="numeric" required>
+                </div>
+                <div class="form-group">
+                    <label>이메일 <span class="required">*</span></label>
+                    <input type="email" id="email" placeholder="user@example.com" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- 주소 정보 -->
+        <div class="card">
+            <div class="card-title">주소 정보</div>
+
+            <div class="form-group">
+                <label>주소</label>
+                <input type="text" id="address" placeholder="서울시 강남구 테헤란로 123">
+            </div>
+
+            <div class="form-group">
+                <label>주민등록등본 첨부</label>
+                <label class="file-label">
+                    <span>📎</span>
+                    <span id="registryLabel">파일 선택 (PDF, JPG, PNG)</span>
+                    <input type="file" id="residenceRegistry" accept=".pdf,.jpg,.jpeg,.png" onchange="showFileName(this,'registryLabel','registryName')">
+                </label>
+                <div class="file-name" id="registryName"></div>
+            </div>
+        </div>
+
+        <!-- 학력 정보 -->
+        <div class="card">
+            <div class="card-title">학력 정보</div>
+
+            <div class="row-2">
+                <div class="form-group">
+                    <label>출신학교</label>
+                    <input type="text" id="school" placeholder="○○대학교">
+                </div>
+                <div class="form-group">
+                    <label>학과</label>
+                    <input type="text" id="major" placeholder="○○학과">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>졸업증명서 첨부</label>
+                <label class="file-label">
+                    <span>📎</span>
+                    <span id="graduationLabel">파일 선택 (PDF, JPG, PNG)</span>
+                    <input type="file" id="graduationCertificate" accept=".pdf,.jpg,.jpeg,.png" onchange="showFileName(this,'graduationLabel','graduationName')">
+                </label>
+                <div class="file-name" id="graduationName"></div>
+            </div>
+        </div>
+
+        <!-- 계좌 정보 -->
+        <div class="card">
+            <div class="card-title">계좌 정보</div>
+
+            <div class="row-2">
+                <div class="form-group">
+                    <label>은행</label>
+                    <select id="bank">
+                        <option value="">은행 선택</option>
+                        <option>국민은행</option>
+                        <option>신한은행</option>
+                        <option>우리은행</option>
+                        <option>하나은행</option>
+                        <option>IBK기업은행</option>
+                        <option>NH농협은행</option>
+                        <option>카카오뱅크</option>
+                        <option>토스뱅크</option>
+                        <option>케이뱅크</option>
+                        <option>SC제일은행</option>
+                        <option>씨티은행</option>
+                        <option>대구은행</option>
+                        <option>부산은행</option>
+                        <option>경남은행</option>
+                        <option>광주은행</option>
+                        <option>전북은행</option>
+                        <option>제주은행</option>
+                        <option>우체국</option>
+                        <option>새마을금고</option>
+                        <option>신협</option>
+                        <option>수협은행</option>
+                        <option>산업은행</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>계좌번호</label>
+                    <input type="text" id="accountNumber" placeholder="000-000-000000">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>통장사본 첨부</label>
+                <label class="file-label">
+                    <span>📎</span>
+                    <span id="bankbookLabel">파일 선택 (PDF, JPG, PNG)</span>
+                    <input type="file" id="bankbook" accept=".pdf,.jpg,.jpeg,.png" onchange="showFileName(this,'bankbookLabel','bankbookName')">
+                </label>
+                <div class="file-name" id="bankbookName"></div>
+            </div>
+        </div>
+
+        <!-- 비상연락망 -->
+        <div class="card">
+            <div class="card-title">비상연락망</div>
+            <div class="hint" style="margin-bottom:14px">본인 이외의 연락 가능한 가족/친인척 연락처 (예: 어머니 / 010-0000-0000)</div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:28%">관계</th>
+                            <th style="width:46%">연락처</th>
+                            <th style="width:26%"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="emergencyTable">
+                        <tr>
+                            <td><input type="text" class="ec-rel" placeholder="예) 어머니"></td>
+                            <td><input type="tel" class="ec-phone" placeholder="010-0000-0000" maxlength="13" inputmode="numeric"></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button type="button" class="btn-add" onclick="addEmergencyRow()">+ 연락처 추가</button>
+        </div>
+
+        <!-- 경력 정보 -->
+        <div class="card">
+            <div class="card-title">경력 정보</div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:23%">회사명</th>
+                            <th style="width:15%">직급</th>
+                            <th style="width:22%">직무</th>
+                            <th style="width:18%">입사연월</th>
+                            <th style="width:18%">퇴사연월</th>
+                        </tr>
+                    </thead>
+                    <tbody id="experienceTable">
+                        <tr>
+                            <td><input type="text" class="exp-company" placeholder="회사명"></td>
+                            <td><input type="text" class="exp-position" placeholder="직급"></td>
+                            <td><input type="text" class="exp-duty" placeholder="직무 내용"></td>
+                            <td><input type="month" class="exp-start" min="1900-01" max="2099-12"></td>
+                            <td><input type="month" class="exp-end" min="1900-01" max="2099-12"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button type="button" class="btn-add" onclick="addExperienceRow()">+ 경력 추가</button>
+
+            <div class="form-group">
+                <label>원천징수영수증 첨부</label>
+                <label class="file-label">
+                    <span>📎</span>
+                    <span id="whtLabel">파일 선택 (PDF, JPG, PNG)</span>
+                    <input type="file" id="whtCertificate" accept=".pdf,.jpg,.jpeg,.png" onchange="showFileName(this,'whtLabel','whtName')">
+                </label>
+                <div class="file-name" id="whtName"></div>
+            </div>
+
+            <div class="form-group">
+                <label>건강보험득실확인서 첨부</label>
+                <label class="file-label">
+                    <span>📎</span>
+                    <span id="healthLabel">파일 선택 (PDF, JPG, PNG)</span>
+                    <input type="file" id="healthInsuranceCertificate" accept=".pdf,.jpg,.jpeg,.png" onchange="showFileName(this,'healthLabel','healthName')">
+                </label>
+                <div class="file-name" id="healthName"></div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">제출하기</button>
+    </form>
+</div>
+
+<script>
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxPzOIEJmmywIRz15QWxDoRahvvVC6HIbmDXCyqagdIGyPu24wq2xCkfpLd6lv6f-MASw/exec';
+
+    // ── 전화번호 자동 하이픈 ──────────────────────────────
+    function formatPhone(raw) {
+        const d = raw.replace(/\D/g, '').slice(0, 11);
+        if (d.length < 4) return d;
+        if (d.startsWith('02')) {
+            if (d.length < 7)  return d.slice(0,2) + '-' + d.slice(2);
+            if (d.length < 10) return d.slice(0,2) + '-' + d.slice(2,5) + '-' + d.slice(5);
+            return d.slice(0,2) + '-' + d.slice(2,6) + '-' + d.slice(6);
+        }
+        if (d.length < 8)  return d.slice(0,3) + '-' + d.slice(3);
+        if (d.length < 11) return d.slice(0,3) + '-' + d.slice(3,6) + '-' + d.slice(6);
+        return d.slice(0,3) + '-' + d.slice(3,7) + '-' + d.slice(7);
+    }
+
+    function attachPhoneFormat(el) {
+        el.addEventListener('input', () => {
+            const pos = el.selectionStart;
+            const prev = el.value;
+            el.value = formatPhone(prev);
+            // 커서 위치 보정
+            const diff = el.value.length - prev.length;
+            el.setSelectionRange(pos + diff, pos + diff);
+        });
+    }
+
+    attachPhoneFormat(document.getElementById('phone'));
+
+    // 비상연락망 전화 필드에도 적용 (동적 행 포함)
+    function attachAllEcPhones() {
+        document.querySelectorAll('.ec-phone').forEach(el => {
+            if (!el.dataset.phoneFormatted) {
+                el.dataset.phoneFormatted = '1';
+                attachPhoneFormat(el);
+            }
+        });
+    }
+    attachAllEcPhones();
+
+    // ── 주민등록번호 자동 하이픈 ─────────────────────────
+    document.getElementById('rrn').addEventListener('input', function () {
+        const d = this.value.replace(/\D/g, '').slice(0, 13);
+        this.value = d.length > 6 ? d.slice(0,6) + '-' + d.slice(6) : d;
+    });
+
+    // ── 파일명 표시 ──────────────────────────────────────
+    function showFileName(input, labelId, nameId) {
+        const f = input.files[0];
+        document.getElementById(labelId).textContent = f ? f.name : '파일 선택 (PDF, JPG, PNG)';
+        document.getElementById(nameId).textContent = f ? '✓ ' + f.name : '';
+    }
+
+    // ── 행 추가 ──────────────────────────────────────────
+    function addEmergencyRow() {
+        const tb = document.getElementById('emergencyTable');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" class="ec-rel" placeholder="예) 어머니"></td>
+            <td><input type="tel" class="ec-phone" placeholder="010-0000-0000" maxlength="13" inputmode="numeric"></td>
+            <td><button type="button" class="btn-remove" onclick="this.closest('tr').remove()">삭제</button></td>`;
+        tb.appendChild(tr);
+        attachAllEcPhones();
+    }
+
+    function addExperienceRow() {
+        const tb = document.getElementById('experienceTable');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="text" class="exp-company" placeholder="회사명"></td>
+            <td><input type="text" class="exp-position" placeholder="직급"></td>
+            <td><input type="text" class="exp-duty" placeholder="직무 내용"></td>
+            <td><input type="month" class="exp-start"></td>
+            <td style="display:flex;align-items:center;gap:4px;border:none;padding:6px 4px;">
+                <input type="month" class="exp-end" min="1900-01" max="2099-12" style="flex:1">
+                <button type="button" class="btn-remove" onclick="this.closest('tr').remove()">삭제</button>
+            </td>`;
+        tb.appendChild(tr);
+    }
+
+    // ── 이메일 검증 ──────────────────────────────────────
+    document.getElementById('email').addEventListener('blur', function () {
+        if (this.value && !this.value.includes('@')) {
+            this.classList.add('error');
+            showAlert('error', '이메일 주소에 @가 포함되어야 합니다.');
+        } else {
+            this.classList.remove('error');
+            hideAlert();
+        }
+    });
+
+    // ── 알림 ─────────────────────────────────────────────
+    function showAlert(type, msg) {
+        const el = document.getElementById('alertBox');
+        el.className = `alert alert-${type}`;
+        el.textContent = msg;
+        el.style.display = 'block';
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function hideAlert() {
+        const el = document.getElementById('alertBox');
+        el.style.display = 'none';
+    }
+
+    // ── 파일 → Base64 ────────────────────────────────────
+    async function toBase64(file) {
+        if (!file) return null;
+        return new Promise((res, rej) => {
+            const r = new FileReader();
+            r.onload = () => res(r.result);
+            r.onerror = rej;
+            r.readAsDataURL(file);
+        });
+    }
+
+    // ── 제출 ─────────────────────────────────────────────
+    document.getElementById('employeeForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideAlert();
+
+        const name      = document.getElementById('name').value.trim();
+        const birthDate = document.getElementById('birthDate').value;
+        const phone     = document.getElementById('phone').value.trim();
+        const email     = document.getElementById('email').value.trim();
+
+        if (!name)      { showAlert('error', '이름을 입력해주세요.'); return; }
+        if (!birthDate) { showAlert('error', '생년월일을 입력해주세요.'); return; }
+        if (!phone)     { showAlert('error', '휴대폰 번호를 입력해주세요.'); return; }
+        if (!email || !email.includes('@')) {
+            document.getElementById('email').classList.add('error');
+            showAlert('error', '올바른 이메일 주소를 입력해주세요. (@가 필요합니다)');
+            return;
+        }
+
+        // 비상연락망
+        const emergencyContacts = [];
+        document.querySelectorAll('#emergencyTable tr').forEach(tr => {
+            const rel   = tr.querySelector('.ec-rel')?.value.trim();
+            const phone = tr.querySelector('.ec-phone')?.value.trim();
+            if (rel || phone) emergencyContacts.push({ relationship: rel, phone });
+        });
+
+        // 경력
+        const experience = [];
+        document.querySelectorAll('#experienceTable tr').forEach(tr => {
+            const company  = tr.querySelector('.exp-company')?.value.trim();
+            const position = tr.querySelector('.exp-position')?.value.trim();
+            const duty     = tr.querySelector('.exp-duty')?.value.trim();
+            const start    = tr.querySelector('.exp-start')?.value;
+            const end      = tr.querySelector('.exp-end')?.value;
+            if (company || position || duty || start || end) experience.push({ company, position, duty, start, end });
+        });
+
+        // 파일
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.textContent = '제출 중...';
+
+        const [registry, bankbook, graduation, wht, health] = await Promise.all([
+            toBase64(document.getElementById('residenceRegistry').files[0]),
+            toBase64(document.getElementById('bankbook').files[0]),
+            toBase64(document.getElementById('graduationCertificate').files[0]),
+            toBase64(document.getElementById('whtCertificate').files[0]),
+            toBase64(document.getElementById('healthInsuranceCertificate').files[0]),
+        ]);
+
+        const payload = {
+            timestamp:     new Date().toISOString(),
+            name,
+            birthDate,
+            rrn:           document.getElementById('rrn').value,
+            phone,
+            email,
+            address:       document.getElementById('address').value.trim(),
+            school:        document.getElementById('school').value.trim(),
+            major:         document.getElementById('major').value.trim(),
+            bank:          document.getElementById('bank').value,
+            accountNumber: document.getElementById('accountNumber').value.trim(),
+            emergencyContacts: JSON.stringify(emergencyContacts),
+            experience:        JSON.stringify(experience),
+            residenceRegistry: registry,
+            bankbook,
+            graduationCertificate: graduation,
+            whtCertificate:        wht,
+            healthInsuranceCertificate: health,
+        };
+
+        try {
+            const res  = await fetch(SHEET_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const data = await res.json();
+
+            if (data.status === 'success') {
+                showAlert('success', '✓ 정보가 성공적으로 제출되었습니다. HR팀에서 확인 후 연락드리겠습니다.');
+                document.getElementById('employeeForm').reset();
+                document.querySelectorAll('.file-name').forEach(el => el.textContent = '');
+                document.querySelectorAll('[id$="Label"]').forEach(el => {
+                    if (el.tagName !== 'INPUT') el.textContent = '파일 선택 (PDF, JPG, PNG)';
+                });
+                btn.textContent = '제출하기';
+                btn.disabled = false;
+            } else {
+                showAlert('error', '제출 오류: ' + (data.message || '다시 시도해주세요.'));
+                btn.textContent = '제출하기';
+                btn.disabled = false;
+            }
+        } catch (err) {
+            console.error(err);
+            showAlert('error', '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+            btn.textContent = '제출하기';
+            btn.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>
