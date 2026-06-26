@@ -271,6 +271,12 @@
             </div>
 
             <div class="form-group">
+                <label>영문 이름 (회사 이메일 주소로 사용) <span class="required">*</span></label>
+                <input type="text" id="englishName" placeholder="gildong.hong" required autocapitalize="off" autocorrect="off" spellcheck="false">
+                <div class="hint"><b>이름.성</b> 형태의 영문 소문자로 입력하세요. 회사 이메일이 <b id="emailPreview">[아이디]@theant.kr</b> 로 생성됩니다.</div>
+            </div>
+
+            <div class="form-group">
                 <label>주민등록번호</label>
                 <input type="text" id="rrn" placeholder="000000-0000000" maxlength="14" inputmode="numeric">
                 <div class="hint">숫자만 입력하면 자동으로 하이픈이 추가됩니다.</div>
@@ -510,6 +516,13 @@
         this.value = d.length > 6 ? d.slice(0,6) + '-' + d.slice(6) : d;
     });
 
+    // ── 영문 이름: 소문자/공백제거 + 이메일 미리보기 ──────
+    document.getElementById('englishName').addEventListener('input', function () {
+        this.value = this.value.toLowerCase().replace(/[^a-z0-9.]/g, '');
+        document.getElementById('emailPreview').textContent =
+            (this.value || '[아이디]') + '@theant.kr';
+    });
+
     // ── 파일명 표시 ──────────────────────────────────────
     function showFileName(input, labelId, nameId) {
         const f = input.files[0];
@@ -585,12 +598,19 @@
         e.preventDefault();
         hideAlert();
 
-        const name      = document.getElementById('name').value.trim();
-        const birthDate = document.getElementById('birthDate').value;
-        const phone     = document.getElementById('phone').value.trim();
-        const email     = document.getElementById('email').value.trim();
+        const name        = document.getElementById('name').value.trim();
+        const englishName  = document.getElementById('englishName').value.trim().toLowerCase();
+        const birthDate   = document.getElementById('birthDate').value;
+        const phone       = document.getElementById('phone').value.trim();
+        const email       = document.getElementById('email').value.trim();
 
         if (!name)      { showAlert('error', '이름을 입력해주세요.'); return; }
+        if (!englishName) { showAlert('error', '영문 이름을 입력해주세요. (예: gildong.hong)'); return; }
+        if (!/^[a-z][a-z0-9.]*[a-z0-9]$/.test(englishName)) {
+            document.getElementById('englishName').classList.add('error');
+            showAlert('error', '영문 이름은 영문 소문자/숫자/점만 사용할 수 있습니다. 예: gildong.hong');
+            return;
+        }
         if (!birthDate) { showAlert('error', '생년월일을 입력해주세요.'); return; }
         if (!phone)     { showAlert('error', '휴대폰 번호를 입력해주세요.'); return; }
         if (!email || !email.includes('@')) {
@@ -634,6 +654,7 @@
         const payload = {
             timestamp:     new Date().toISOString(),
             name,
+            englishName,
             birthDate,
             rrn:           document.getElementById('rrn').value,
             phone,
